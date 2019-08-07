@@ -15,9 +15,24 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: 
-    "dotnet restore dotnet build --configuration Release"
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: 'DemoFunctionApp/'
+    feedsToUse: 'select'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'DemoFunctionApp/'
+    arguments: '--configuration Release'
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)/publish_output'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
 
 
